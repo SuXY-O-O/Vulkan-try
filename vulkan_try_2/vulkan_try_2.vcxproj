@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mymodel.cpp" />
+    <ClCompile Include="mytool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\compile.bat" />
@@ -170,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="linmath.h" />
     <ClInclude Include="mymodel.h" />
+    <ClInclude Include="mytool.h" />
     <ClInclude Include="myvertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

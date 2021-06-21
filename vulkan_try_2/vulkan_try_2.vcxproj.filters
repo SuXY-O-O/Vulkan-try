@@ -21,6 +21,9 @@
     <ClCompile Include="mymodel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="mytool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag">
@@ -41,6 +44,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="mymodel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mytool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

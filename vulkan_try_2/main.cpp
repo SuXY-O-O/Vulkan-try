@@ -15,7 +15,7 @@
 #include "mymodel.h"
 
 const uint32_t WIDTH = 800;
-const uint32_t HEIGHT = 600;
+const uint32_t HEIGHT = 800;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -65,7 +65,7 @@ struct SwapChainSupportDetails {
     std::vector<VkPresentModeKHR> presentModes;
 };
 
-MyStar* triangle;
+MyStar* mystar;
 
 class HelloTriangleApplication {
 public:
@@ -663,34 +663,39 @@ private:
         }
     }
 
-    void createVertexBuffer() {
-        VkBufferCreateInfo bufferInfo{};
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+        VkBufferCreateInfo bufferInfo = {};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        bufferInfo.size = sizeof(Vertex) * triangle->get_size();
-        bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+        bufferInfo.size = size;
+        bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create vertex buffer!");
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create buffer!");
         }
 
         VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(device, vertexBuffer, &memRequirements);
+        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
 
-        VkMemoryAllocateInfo allocInfo{};
+        VkMemoryAllocateInfo allocInfo = {};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &vertexBufferMemory) != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate vertex buffer memory!");
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate buffer memory!");
         }
 
-        vkBindBufferMemory(device, vertexBuffer, vertexBufferMemory, 0);
+        vkBindBufferMemory(device, buffer, bufferMemory, 0);
+    }
+
+    void createVertexBuffer() {
+        VkDeviceSize bufferSize = sizeof(Vertex) * mystar->get_size();
+        createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vertexBuffer, vertexBufferMemory);
 
         void* data;
-        vkMapMemory(device, vertexBufferMemory, 0, bufferInfo.size, 0, &data);
-        memcpy(data, triangle->vertexs.data(), (size_t)bufferInfo.size);
+        vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, mystar->vertexs.data(), (size_t)bufferSize);
         vkUnmapMemory(device, vertexBufferMemory);
     }
 
@@ -746,11 +751,11 @@ private:
             VkBuffer vertexBuffers[] = { vertexBuffer };
             VkDeviceSize offsets[] = { 0 };
             vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(triangle->face_count), 1, static_cast<uint32_t>(triangle->face_offset), 0);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mystar->face_count), 1, static_cast<uint32_t>(mystar->face_offset), 0);
 
             vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, linePipeline);
             vkCmdSetLineWidth(commandBuffers[i], 5.0f);
-            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(triangle->line_count), 1, static_cast<uint32_t>(triangle->line_offset), 0);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mystar->line_count), 1, static_cast<uint32_t>(mystar->line_offset), 0);
 
             vkCmdEndRenderPass(commandBuffers[i]);
 
@@ -802,9 +807,9 @@ private:
         imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
         void* data;
-        triangle->update_frame();
-        vkMapMemory(device, vertexBufferMemory, 0, sizeof(Vertex) * triangle->get_size(), 0, &data);
-        memcpy(data, triangle->vertexs.data(), sizeof(Vertex) * triangle->get_size());
+        mystar->update_frame();
+        vkMapMemory(device, vertexBufferMemory, 0, sizeof(Vertex) * mystar->get_size(), 0, &data);
+        memcpy(data, mystar->vertexs.data(), sizeof(Vertex) * mystar->get_size());
         vkUnmapMemory(device, vertexBufferMemory);
 
         VkSubmitInfo submitInfo{};
@@ -1059,7 +1064,7 @@ private:
 };
 
 int main() {
-    triangle = new MyStar(WIDTH, HEIGHT);
+    mystar = new MyStar(WIDTH, HEIGHT);
     HelloTriangleApplication app;
 
     try {

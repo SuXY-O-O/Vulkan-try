@@ -1,4 +1,5 @@
 #include "mymodel.h"
+#include "mytool.h"
 #include <math.h>
 #define PI 3.1415926
 
@@ -58,14 +59,14 @@ void MyTriangle::update_frame()
 MyStar::MyStar(int w, int h)
 {
 	Vertex tmp[5];
-	float radis = 200.0f;
+	float radis = 100.0f;
 	int begin_offset = -18;
 	int i;
 	for (i = 0; i < 5; i++)
 	{
 		tmp[i].pos.x = radis * cos(((72 * (double)i + begin_offset) / 360) * (2 * PI)) / w * 2;
 		tmp[i].pos.y = radis * sin(((72 * (double)i + begin_offset) / 360) * (2 * PI)) / h * 2;
-		tmp[i].pos.z = 0.0f;
+		tmp[i].pos.z = 0.5f;
 		tmp[i].color = { 0.0f, 0.0f, 0.0f };
 	}
 	vertexs.push_back(tmp[0]);
@@ -96,7 +97,16 @@ MyStar::MyStar(int w, int h)
 	vertexs.push_back(tmp_cross[0]);
 	vertexs.push_back(tmp_cross[3]);
 	vertexs.push_back(tmp_cross[4]);
-	face_count = 9;
+	vertexs.push_back(tmp_cross[0]);
+	vertexs.push_back(tmp_cross[2]);
+	vertexs.push_back(tmp_cross[1]);
+	vertexs.push_back(tmp_cross[0]);
+	vertexs.push_back(tmp_cross[3]);
+	vertexs.push_back(tmp_cross[2]);
+	vertexs.push_back(tmp_cross[0]);
+	vertexs.push_back(tmp_cross[4]);
+	vertexs.push_back(tmp_cross[3]);
+	face_count = 18;
 	face_offset = 6;
 
 	width = w;
@@ -105,6 +115,11 @@ MyStar::MyStar(int w, int h)
 
 void MyStar::update_frame()
 {
+	unsigned int i; 
+	for (i = 0; i < vertexs.size(); i++)
+	{
+		MyTool::rotate(vertexs[i].pos, 0.0f, 1.0f, 0.0f);
+	}
 }
 
 Vertex MyStar::count_cross(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
@@ -116,6 +131,6 @@ Vertex MyStar::count_cross(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
 	ans.pos.y = ((v2.pos.y - v3.pos.y) * (v1.pos.y * v0.pos.x - v0.pos.y * v1.pos.x) -
 		(v0.pos.y - v1.pos.y) * (v3.pos.y * v2.pos.x - v2.pos.y * v3.pos.x)) / (
 			(v2.pos.y - v3.pos.y) * (v0.pos.x - v1.pos.x) - (v0.pos.y - v1.pos.y) * (v2.pos.x - v3.pos.x));
-	ans.pos.z = 0.0f;
+	ans.pos.z = 0.5f;
 	return ans;
 }
