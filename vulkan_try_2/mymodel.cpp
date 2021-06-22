@@ -59,7 +59,7 @@ void MyTriangle::update_frame()
 MyStar::MyStar(int w, int h)
 {
 	Vertex tmp[5];
-	float radis = 100.0f;
+	float radis = 400.0f;
 	int begin_offset = -18;
 	int i;
 	for (i = 0; i < 5; i++)
@@ -133,4 +133,88 @@ Vertex MyStar::count_cross(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
 			(v2.pos.y - v3.pos.y) * (v0.pos.x - v1.pos.x) - (v0.pos.y - v1.pos.y) * (v2.pos.x - v3.pos.x));
 	ans.pos.z = 0.5f;
 	return ans;
+}
+
+MyBox::MyBox(int w, int h)
+{
+	width = w;
+	height = h;
+	Vertex point[8];
+	float nw = (float)side_length / 2.0f / width;
+	float nh = (float)side_length / 2.0f / height;
+	point[0] = { {-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f} };
+	point[1] = { {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
+	point[2] = { {0.5f, -0.5f, 0.5f}, {1.0f, 0.0f, 1.0f} };
+	point[3] = { {-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 1.0f} };
+	point[4] = { {-0.5f, 0.5f, -0.5f}, {1.0f, 0.0f, 0.0f} };
+	point[5] = { {0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
+	point[6] = { {0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[7] = { {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 0.0f} };
+	unsigned int i;
+	//for (i = 0; i < 8; i++)
+	//{
+	//	point[i].pos.z = (point[i].pos.z + 1.0f) / 2.0f;
+	//}
+
+	line_count = 0;
+	line_offset = 0;
+	face_offset = 0;
+	face_count = 36;
+	// +x--1
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[1]);
+	vertexs.push_back(point[2]);
+	// +x--2
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[2]);
+	vertexs.push_back(point[3]);
+	// -y--1
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[3]);
+	vertexs.push_back(point[7]);
+	// -y--2
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[7]);
+	vertexs.push_back(point[4]);
+	// +y--1
+	vertexs.push_back(point[1]);
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[6]);
+	// +y--2
+	vertexs.push_back(point[1]);
+	vertexs.push_back(point[6]);
+	vertexs.push_back(point[2]);
+	// -x--1
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[4]);
+	vertexs.push_back(point[7]);
+	// -x--2
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[7]);
+	vertexs.push_back(point[6]);
+	// +z--1
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[4]);
+	vertexs.push_back(point[5]);
+	// +z--2
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[1]);
+	// -z--1
+	vertexs.push_back(point[3]);
+	vertexs.push_back(point[2]);
+	vertexs.push_back(point[6]);
+	// -z--2
+	vertexs.push_back(point[3]);
+	vertexs.push_back(point[6]);
+	vertexs.push_back(point[7]);
+}
+
+void MyBox::update_frame()
+{
+	unsigned int i;
+	for (i = 0; i < vertexs.size(); i++)
+	{
+		MyTool::rotate(vertexs[i].pos, 0.0f, 0.0f, 1.0f);
+	}
 }

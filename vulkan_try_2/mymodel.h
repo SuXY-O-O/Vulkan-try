@@ -32,3 +32,12 @@ public:
 private:
 	Vertex count_cross(Vertex v1, Vertex v2, Vertex v3, Vertex v4);
 };
+
+class MyBox : public MyModel
+{
+public:
+	MyBox(int w, int h);
+	void update_frame();
+private:
+	int side_length = 100;
+};
