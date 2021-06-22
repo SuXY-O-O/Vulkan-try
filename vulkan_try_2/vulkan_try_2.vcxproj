@@ -173,6 +173,7 @@
     <ClInclude Include="mymodel.h" />
     <ClInclude Include="mytool.h" />
     <ClInclude Include="myvertex.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

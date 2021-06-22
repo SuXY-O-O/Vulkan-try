@@ -142,14 +142,16 @@ MyBox::MyBox(int w, int h)
 	Vertex point[8];
 	float nw = (float)side_length / 2.0f / width;
 	float nh = (float)side_length / 2.0f / height;
-	point[0] = { {-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f} };
-	point[1] = { {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
-	point[2] = { {0.5f, -0.5f, 0.5f}, {1.0f, 0.0f, 1.0f} };
-	point[3] = { {-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 1.0f} };
-	point[4] = { {-0.5f, 0.5f, -0.5f}, {1.0f, 0.0f, 0.0f} };
-	point[5] = { {0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
-	point[6] = { {0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} };
-	point[7] = { {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 0.0f} };
+	point[0] = { {-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[1] = { {0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
+	point[2] = { {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
+	point[3] = { {-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
+
+	point[4] = { {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
+	point[5] = { {0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
+	point[6] = { {0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
+	point[7] = { {-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
+
 	unsigned int i;
 	//for (i = 0; i < 8; i++)
 	//{
@@ -160,54 +162,59 @@ MyBox::MyBox(int w, int h)
 	line_offset = 0;
 	face_offset = 0;
 	face_count = 36;
-	// +x--1
-	vertexs.push_back(point[0]);
-	vertexs.push_back(point[1]);
-	vertexs.push_back(point[2]);
-	// +x--2
-	vertexs.push_back(point[0]);
-	vertexs.push_back(point[2]);
-	vertexs.push_back(point[3]);
-	// -y--1
+
 	vertexs.push_back(point[0]);
 	vertexs.push_back(point[3]);
-	vertexs.push_back(point[7]);
-	// -y--2
-	vertexs.push_back(point[0]);
-	vertexs.push_back(point[7]);
-	vertexs.push_back(point[4]);
-	// +y--1
-	vertexs.push_back(point[1]);
-	vertexs.push_back(point[5]);
-	vertexs.push_back(point[6]);
-	// +y--2
-	vertexs.push_back(point[1]);
-	vertexs.push_back(point[6]);
 	vertexs.push_back(point[2]);
-	// -x--1
-	vertexs.push_back(point[5]);
-	vertexs.push_back(point[4]);
-	vertexs.push_back(point[7]);
-	// -x--2
-	vertexs.push_back(point[5]);
-	vertexs.push_back(point[7]);
-	vertexs.push_back(point[6]);
-	// +z--1
+	vertexs.push_back(point[2]);
+	vertexs.push_back(point[1]);
 	vertexs.push_back(point[0]);
+
 	vertexs.push_back(point[4]);
 	vertexs.push_back(point[5]);
-	// +z--2
-	vertexs.push_back(point[0]);
-	vertexs.push_back(point[5]);
-	vertexs.push_back(point[1]);
-	// -z--1
-	vertexs.push_back(point[3]);
-	vertexs.push_back(point[2]);
 	vertexs.push_back(point[6]);
-	// -z--2
-	vertexs.push_back(point[3]);
 	vertexs.push_back(point[6]);
 	vertexs.push_back(point[7]);
+	vertexs.push_back(point[4]);
+
+	vertexs.push_back(point[3]);
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[4]);
+	vertexs.push_back(point[4]);
+	vertexs.push_back(point[7]);
+	vertexs.push_back(point[3]);
+
+	vertexs.push_back(point[1]);
+	vertexs.push_back(point[2]);
+	vertexs.push_back(point[6]);
+	vertexs.push_back(point[6]);
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[1]);
+
+	vertexs.push_back(point[2]);
+	vertexs.push_back(point[3]);
+	vertexs.push_back(point[7]);
+	vertexs.push_back(point[7]);
+	vertexs.push_back(point[6]);
+	vertexs.push_back(point[2]);
+
+	vertexs.push_back(point[0]);
+	vertexs.push_back(point[1]);
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[5]);
+	vertexs.push_back(point[4]);
+	vertexs.push_back(point[0]);
+	
+	for (i = 0; i < 6; i++)
+	{
+		vertexs[i * 6 + 0].texCoord = { 0.0f, 0.0f };
+		vertexs[i * 6 + 1].texCoord = { 1.0f, 0.0f };
+		vertexs[i * 6 + 2].texCoord = { 1.0f, 1.0f };
+
+		vertexs[i * 6 + 3].texCoord = { 1.0f, 1.0f };
+		vertexs[i * 6 + 4].texCoord = { 0.0f, 1.0f };
+		vertexs[i * 6 + 5].texCoord = { 0.0f, 0.0f };
+	}
 }
 
 void MyBox::update_frame()
