@@ -124,7 +124,7 @@ MyStar::MyStar(int w, int h)
 	{
 		tmp_cross[i].color = { 1.0f, 1.0f, 0.0f };
 		tmp_cross[i].needTex = 0;
-		tmp_cross[i].normal = { 0.0f, 0.0f, 1.0f };
+		tmp_cross[i].normal = { 0.0f, 0.0f, -1.0f };
 	}
 	vertexs.push_back(tmp_cross[0]);
 	vertexs.push_back(tmp_cross[1]);
@@ -137,7 +137,7 @@ MyStar::MyStar(int w, int h)
 	vertexs.push_back(tmp_cross[4]);
 	for (i = 0; i < 5; i++)
 	{
-		tmp_cross[i].normal = { 0.0f, 0.0f, -1.0f };
+		tmp_cross[i].normal = { 0.0f, 0.0f, 1.0f };
 	}
 	vertexs.push_back(tmp_cross[0]);
 	vertexs.push_back(tmp_cross[2]);
@@ -291,24 +291,25 @@ void MyBox::update_frame()
 MyPlain::MyPlain(int w, int h)
 {
 	Vertex point[4];
-	float c = 400;
-	point[0].pos = { -c / w, -c / h, -2.0f };
-	point[1].pos = { c / w, -c / h, -2.0f };
-	point[2].pos = { c / w, c / h, -2.0f };
-	point[3].pos = { -c / w, c / h, -2.0f };
+	float c = 3200;
+	float z = -1.0f;
+	point[0].pos = { -c / w, -c / h, z };
+	point[1].pos = { c / w, -c / h, z };
+	point[2].pos = { c / w, c / h, z };
+	point[3].pos = { -c / w, c / h, z };
 	unsigned int i;
 	for (i = 0; i < 4; i++)
 	{
-		point[i].color = { 0.5f, 0.5f, 0.5f };
+		point[i].color = { 1.0f, 1.0f, 1.0f };
 		point[i].normal = { 0.0f, 0.0f, 1.0f };
 		point[i].needTex = 0;
 	}
 	vertexs.push_back(point[0]);
+	vertexs.push_back(point[2]);
 	vertexs.push_back(point[1]);
 	vertexs.push_back(point[2]);
-	vertexs.push_back(point[2]);
-	vertexs.push_back(point[3]);
 	vertexs.push_back(point[0]);
+	vertexs.push_back(point[3]);
 	face_count = 6;
 	face_offset = 0;
 	line_count = 0;
@@ -363,12 +364,12 @@ void MyBall::divide_tri(glm::vec3 a, glm::vec3 b, glm::vec3 c, int depth)
 		tmp[4].pos = ac;
 		tmp[5].pos = bc;
 
-		tmp[0].normal = a;
-		tmp[1].normal = b;
-		tmp[2].normal = c;
-		tmp[3].normal = ab;
-		tmp[4].normal = ac;
-		tmp[5].normal = bc;
+		tmp[0].normal = -a;
+		tmp[1].normal = -b;
+		tmp[2].normal = -c;
+		tmp[3].normal = -ab;
+		tmp[4].normal = -ac;
+		tmp[5].normal = -bc;
 
 		vertexs.push_back(tmp[0]);
 		vertexs.push_back(tmp[3]);

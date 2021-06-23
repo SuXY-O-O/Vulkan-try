@@ -44,7 +44,11 @@ void main() {
     // Specular light
     vec3 viewDir = normalize(viewPos - modelPos);
     vec3 reflectDir = reflect(-lightDir, normNormal);
-    float specularStr = pow(max(dot(viewDir, reflectDir), 0.0), 32) * spStrength;
+    float specularStr = pow(max(dot(viewDir, reflectDir), 0.0), 16) * spStrength;
+    if (diffuseStr <= 0.00001)
+    {
+        specularStr = 0.0;
+    }
     vec3 specular = specularStr * fragBaseLight;
 
     vec3 light = ambient + diffuse + specular;

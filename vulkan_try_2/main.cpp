@@ -1258,21 +1258,21 @@ private:
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         UniformBufferObject ubo{};
-        glm::vec3 camera = { 7.0f, 0.0f, 0.0f };
-        // ubo.model = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-0.0f, -0.0f, 1.0f));
+        glm::vec3 camera = { 3.0f, 0.0f, 6.0f };
+        ubo.model = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
+        //ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-2.0f, -0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
         // light color
         ubo.baseLight = { 1.0f, 1.0f, 1.0f };
         // light pos
-        ubo.lightPos = { 2.0f, 2.0f, 2.0f };
+        ubo.lightPos = { 0.0f, 0.0f, 2.0f };
         ubo.viewPos = camera;
         // light strength
-        ubo.ambientStrength = 0.5f;
-        ubo.specularStrength = 0.4f;
-        ubo.diffuseStrength = 0.8f;
+        ubo.ambientStrength = 0.2;
+        ubo.specularStrength = 0.2;
+        ubo.diffuseStrength = 0.6;
         
         void* data;
         vkMapMemory(device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
