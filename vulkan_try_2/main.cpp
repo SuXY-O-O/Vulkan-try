@@ -89,9 +89,11 @@ struct UniformBufferObject {
     alignas(4) float diffuseStrength;
 };
 
-// MyStar* mystar;
+// models
+MyStar* mystar;
 MyBox* mybox;
-
+MyBall* myball;
+MyPlain* myplain;
 
 class HelloTriangleApplication {
 public:
@@ -1062,12 +1064,18 @@ private:
     }
 
     void createVertexBuffer() {
-        VkDeviceSize bufferSize = sizeof(Vertex) * mybox->get_size();
+        std::vector<Vertex> combineAll;
+        combineAll.insert(combineAll.end(), myplain->vertexs.begin(), myplain->vertexs.end());
+        combineAll.insert(combineAll.end(), mystar->vertexs.begin(), mystar->vertexs.end());
+        combineAll.insert(combineAll.end(), mybox->vertexs.begin(), mybox->vertexs.end());
+        combineAll.insert(combineAll.end(), myball->vertexs.begin(), myball->vertexs.end());
+
+        VkDeviceSize bufferSize = sizeof(Vertex) * combineAll.size();
         createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vertexBuffer, vertexBufferMemory);
 
         void* data;
         vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, mybox->vertexs.data(), (size_t)bufferSize);
+        memcpy(data, combineAll.data(), (size_t)bufferSize);
         vkUnmapMemory(device, vertexBufferMemory);
     }
 
@@ -1189,7 +1197,7 @@ private:
             renderPassInfo.renderArea.extent = swapChainExtent;
 
             std::array<VkClearValue, 2> clearValues{};
-            clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+            clearValues[0].color = { 0.2f, 0.2f, 0.2f, 1.0f };
             clearValues[1].depthStencil = { 1.0f, 0 };
             renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
             renderPassInfo.pClearValues = clearValues.data();
@@ -1203,11 +1211,14 @@ private:
             vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
             vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 
-            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mybox->face_count), 1, static_cast<uint32_t>(mybox->face_offset), 0);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(myplain->face_count), 1, static_cast<uint32_t>(mybox->face_offset), 0);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mystar->face_count), 1, static_cast<uint32_t>(myplain->vertexs.size() + mystar->face_offset), 0);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mybox->face_count), 1, static_cast<uint32_t>(myplain->vertexs.size() + mystar->vertexs.size() + mybox->face_offset), 0);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(myball->face_count), 1, static_cast<uint32_t>(myplain->vertexs.size() + mystar->vertexs.size() + mybox->vertexs.size() + myball->face_offset), 0);
 
-            //vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, linePipeline);
-            //vkCmdSetLineWidth(commandBuffers[i], 5.0f);
-            //vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mybox->line_count), 1, static_cast<uint32_t>(mybox->line_offset), 0);
+            vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, linePipeline);
+            vkCmdSetLineWidth(commandBuffers[i], 5.0f);
+            vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mystar->line_count), 1, static_cast<uint32_t>(myplain->vertexs.size() + mystar->line_offset), 0);
 
             vkCmdEndRenderPass(commandBuffers[i]);
 
@@ -1247,10 +1258,10 @@ private:
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         UniformBufferObject ubo{};
-        glm::vec3 camera = { 3.0f, 3.0f, 3.0f };
-        ubo.model = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
-        // ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, -1.0f, 1.0f));
+        glm::vec3 camera = { 7.0f, 0.0f, 0.0f };
+        // ubo.model = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} };
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-0.0f, -0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
         // light color
@@ -1259,9 +1270,9 @@ private:
         ubo.lightPos = { 2.0f, 2.0f, 2.0f };
         ubo.viewPos = camera;
         // light strength
-        ubo.ambientStrength = 0.0f;
+        ubo.ambientStrength = 0.5f;
         ubo.specularStrength = 0.4f;
-        ubo.diffuseStrength = 0.6f;
+        ubo.diffuseStrength = 0.8f;
         
         void* data;
         vkMapMemory(device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
@@ -1290,9 +1301,17 @@ private:
 
         updateUniformBuffer(imageIndex);
         void* data;
+        myplain->update_frame();
         mybox->update_frame();
-        vkMapMemory(device, vertexBufferMemory, 0, sizeof(Vertex) * mybox->get_size(), 0, &data);
-        memcpy(data, mybox->vertexs.data(), sizeof(Vertex) * mybox->get_size());
+        myball->update_frame();
+        mystar->update_frame();
+        std::vector<Vertex> combineAll;
+        combineAll.insert(combineAll.end(), myplain->vertexs.begin(), myplain->vertexs.end());
+        combineAll.insert(combineAll.end(), mystar->vertexs.begin(), mystar->vertexs.end());
+        combineAll.insert(combineAll.end(), mybox->vertexs.begin(), mybox->vertexs.end());
+        combineAll.insert(combineAll.end(), myball->vertexs.begin(), myball->vertexs.end());
+        vkMapMemory(device, vertexBufferMemory, 0, sizeof(Vertex) * combineAll.size(), 0, &data);
+        memcpy(data, combineAll.data(), sizeof(Vertex) * combineAll.size());
         vkUnmapMemory(device, vertexBufferMemory);
 
         VkSubmitInfo submitInfo{};
@@ -1547,8 +1566,12 @@ private:
 };
 
 int main() {
-    //mystar = new MyStar(WIDTH, HEIGHT);
-    mybox = new MyBox(WIDTH, HEIGHT);
+    mystar = new MyStar(WIDTH, HEIGHT);
+    mystar->move_xyz(0.0f, -2.0f, 0.0f);
+    mybox = new MyBox(WIDTH, HEIGHT, 1);
+    mybox->move_xyz(0.0f, 2.0f, 0.0f);
+    myball = new MyBall(WIDTH, HEIGHT, 4);
+    myplain = new MyPlain(WIDTH, HEIGHT);
     HelloTriangleApplication app;
 
     try {
