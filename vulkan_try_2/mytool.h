@@ -8,7 +8,7 @@
 class MyTool
 {
 public:
-	static void rotate(glm::vec3& source, float x, float y, float z);
+	static void rotate(glm::vec3& source, float x, float y, float z, bool turn_z);
 	static void panning(glm::vec3& source, float x, float y, float z);
 };
 

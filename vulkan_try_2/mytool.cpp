@@ -2,7 +2,7 @@
 #include <math.h>
 #define PI 3.1415926
 
-void MyTool::rotate(glm::vec3& source, float x, float y, float z)
+void MyTool::rotate(glm::vec3& source, float x, float y, float z, bool ture_z)
 {
 	float ax = x / 180 * PI;
 	float ay = y / 180 * PI;
@@ -22,11 +22,17 @@ void MyTool::rotate(glm::vec3& source, float x, float y, float z)
 		{sin(az), cos(az), 0},
 		{0, 0, 1}
 	};
-	source.z -= 0.5f;
-	source.z *= 2;
+	if (ture_z)
+	{
+		source.z -= 0.5f;
+		source.z *= 2;
+	}
 	source = rx * ry * rz * source;
-	source.z /= 2;
-	source.z += 0.5f;
+	if (ture_z)
+	{
+		source.z /= 2;
+		source.z += 0.5f;
+	}
 	return;
 }
 

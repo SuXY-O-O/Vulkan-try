@@ -24,14 +24,20 @@ MyTriangle::MyTriangle(int w, int h)
 	Vertex a;
 	a.pos = { 0.0f, -0.5f, 0.0f };
 	a.color = { 1.0f, 1.0f, 0.0f };
+	a.normal = { 0.0f, 0.0f, 1.0f };
+	a.needTex = 0;
 	vertexs.push_back(a);
 	Vertex b;
 	b.pos = { 0.5f, 0.5f, 0.0f };
 	b.color = { 1.0f, 1.0f, 0.0f };
+	b.normal = { 0.0f, 0.0f, 1.0f };
+	b.needTex = 0;
 	vertexs.push_back(b);
 	Vertex c;
 	c.pos = { -0.5f, 0.5f, 0.0f };
 	c.color = { 1.0f, 1.0f, 0.0f };
+	c.normal = { 0.0f, 0.0f, 1.0f };
+	c.needTex = 0;
 	vertexs.push_back(c);
 	face_count = 3;
 	face_offset = 0;
@@ -68,6 +74,8 @@ MyStar::MyStar(int w, int h)
 		tmp[i].pos.y = radis * sin(((72 * (double)i + begin_offset) / 360) * (2 * PI)) / h * 2;
 		tmp[i].pos.z = 0.5f;
 		tmp[i].color = { 0.0f, 0.0f, 0.0f };
+		tmp[i].needTex = 0;
+		tmp[i].normal = { 0.0f, 0.0f, 1.0f };
 	}
 	vertexs.push_back(tmp[0]);
 	vertexs.push_back(tmp[3]);
@@ -87,6 +95,8 @@ MyStar::MyStar(int w, int h)
 	for (i = 0; i < 5; i++)
 	{
 		tmp_cross[i].color = { 1.0f, 1.0f, 0.0f };
+		tmp_cross[i].needTex = 0;
+		tmp_cross[i].normal = { 0.0f, 0.0f, 1.0f };
 	}
 	vertexs.push_back(tmp_cross[0]);
 	vertexs.push_back(tmp_cross[1]);
@@ -97,6 +107,10 @@ MyStar::MyStar(int w, int h)
 	vertexs.push_back(tmp_cross[0]);
 	vertexs.push_back(tmp_cross[3]);
 	vertexs.push_back(tmp_cross[4]);
+	for (i = 0; i < 5; i++)
+	{
+		tmp_cross[i].normal = { 0.0f, 0.0f, -1.0f };
+	}
 	vertexs.push_back(tmp_cross[0]);
 	vertexs.push_back(tmp_cross[2]);
 	vertexs.push_back(tmp_cross[1]);
@@ -115,10 +129,14 @@ MyStar::MyStar(int w, int h)
 
 void MyStar::update_frame()
 {
-	unsigned int i; 
+	unsigned int i;
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 1.0f;
 	for (i = 0; i < vertexs.size(); i++)
 	{
-		MyTool::rotate(vertexs[i].pos, 0.0f, 1.0f, 0.0f);
+		MyTool::rotate(vertexs[i].pos, x, y, z, true);
+		MyTool::rotate(vertexs[i].normal, x, y, z, false);
 	}
 }
 
@@ -137,32 +155,34 @@ Vertex MyStar::count_cross(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
 
 MyBox::MyBox(int w, int h)
 {
+	float use_texture = 1;
 	width = w;
 	height = h;
 	Vertex point[8];
 	float nw = (float)side_length / 2.0f / width;
 	float nh = (float)side_length / 2.0f / height;
 	point[0] = { {-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f} };
-	point[1] = { {0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
-	point[2] = { {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
-	point[3] = { {-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 0.0f} };
+	point[1] = { {0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[2] = { {0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[3] = { {-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f} };
 
-	point[4] = { {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
-	point[5] = { {0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
-	point[6] = { {0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
-	point[7] = { {-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f} };
+	point[4] = { {-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[5] = { {0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[6] = { {0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} };
+	point[7] = { {-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} };
 
 	unsigned int i;
-	//for (i = 0; i < 8; i++)
-	//{
-	//	point[i].pos.z = (point[i].pos.z + 1.0f) / 2.0f;
-	//}
 
 	line_count = 0;
 	line_offset = 0;
 	face_offset = 0;
 	face_count = 36;
 
+	for (i = 0; i < 8; i++)
+	{
+		point[i].needTex = use_texture;
+		point[i].normal = { 0.0f, 0.0f, 1.0f };
+	}
 	vertexs.push_back(point[0]);
 	vertexs.push_back(point[3]);
 	vertexs.push_back(point[2]);
@@ -170,6 +190,11 @@ MyBox::MyBox(int w, int h)
 	vertexs.push_back(point[1]);
 	vertexs.push_back(point[0]);
 
+	for (i = 0; i < 8; i++)
+	{
+		point[i].needTex = use_texture;
+		point[i].normal = { 0.0f, 0.0f, -1.0f };
+	}
 	vertexs.push_back(point[4]);
 	vertexs.push_back(point[5]);
 	vertexs.push_back(point[6]);
@@ -177,6 +202,11 @@ MyBox::MyBox(int w, int h)
 	vertexs.push_back(point[7]);
 	vertexs.push_back(point[4]);
 
+	for (i = 0; i < 8; i++)
+	{
+		point[i].needTex = use_texture;
+		point[i].normal = { -1.0f, 0.0f, 0.0f };
+	}
 	vertexs.push_back(point[3]);
 	vertexs.push_back(point[0]);
 	vertexs.push_back(point[4]);
@@ -184,6 +214,11 @@ MyBox::MyBox(int w, int h)
 	vertexs.push_back(point[7]);
 	vertexs.push_back(point[3]);
 
+	for (i = 0; i < 8; i++)
+	{
+		point[i].needTex = use_texture;
+		point[i].normal = { 1.0f, 0.0f, 0.0f };
+	}
 	vertexs.push_back(point[1]);
 	vertexs.push_back(point[2]);
 	vertexs.push_back(point[6]);
@@ -191,6 +226,11 @@ MyBox::MyBox(int w, int h)
 	vertexs.push_back(point[5]);
 	vertexs.push_back(point[1]);
 
+	for (i = 0; i < 8; i++)
+	{
+		point[i].needTex = use_texture;
+		point[i].normal = { 0.0f, 1.0f, 0.0f };
+	}
 	vertexs.push_back(point[2]);
 	vertexs.push_back(point[3]);
 	vertexs.push_back(point[7]);
@@ -198,6 +238,11 @@ MyBox::MyBox(int w, int h)
 	vertexs.push_back(point[6]);
 	vertexs.push_back(point[2]);
 
+	for (i = 0; i < 8; i++)
+	{
+		point[i].needTex = use_texture;
+		point[i].normal = { 0.0f, -1.0f, 0.0f };
+	}
 	vertexs.push_back(point[0]);
 	vertexs.push_back(point[1]);
 	vertexs.push_back(point[5]);
@@ -220,8 +265,12 @@ MyBox::MyBox(int w, int h)
 void MyBox::update_frame()
 {
 	unsigned int i;
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 1.0f;
 	for (i = 0; i < vertexs.size(); i++)
 	{
-		MyTool::rotate(vertexs[i].pos, 0.0f, 0.0f, 1.0f);
+		MyTool::rotate(vertexs[i].pos, x, y, z, true);
+		MyTool::rotate(vertexs[i].normal, x, y, z, false);
 	}
 }
