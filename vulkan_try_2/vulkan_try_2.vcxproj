@@ -167,6 +167,8 @@
     <None Include="shaders\compile.bat" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
+    <None Include="shaders\shadow.frag" />
+    <None Include="shaders\shadow.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linmath.h" />

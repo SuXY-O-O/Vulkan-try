@@ -297,6 +297,7 @@ MyPlain::MyPlain(int w, int h)
 	point[1].pos = { c / w, -c / h, z };
 	point[2].pos = { c / w, c / h, z };
 	point[3].pos = { -c / w, c / h, z };
+	point[3].texCoord = { -c / w, c / h};
 	unsigned int i;
 	for (i = 0; i < 4; i++)
 	{
@@ -305,11 +306,20 @@ MyPlain::MyPlain(int w, int h)
 		point[i].needTex = 0;
 	}
 	vertexs.push_back(point[0]);
+	vertexs.push_back(point[3]);
+	vertexs.push_back(point[2]);
 	vertexs.push_back(point[2]);
 	vertexs.push_back(point[1]);
-	vertexs.push_back(point[2]);
 	vertexs.push_back(point[0]);
-	vertexs.push_back(point[3]);
+
+	vertexs[0].texCoord = { 0.0f, 0.0f };
+	vertexs[1].texCoord = { 1.0f, 0.0f };
+	vertexs[2].texCoord = { 1.0f, 1.0f };
+
+	vertexs[3].texCoord = { 1.0f, 1.0f };
+	vertexs[4].texCoord = { 0.0f, 1.0f };
+	vertexs[5].texCoord = { 0.0f, 0.0f };
+
 	face_count = 6;
 	face_offset = 0;
 	line_count = 0;

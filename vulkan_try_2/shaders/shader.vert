@@ -5,6 +5,10 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 model;
     mat4 view;
     mat4 proj;
+
+    mat4 depthModel;
+    mat4 depthView;
+    mat4 depthProj;
     
     vec3 baseLight;
     vec3 lightPos;
@@ -34,6 +38,14 @@ layout(location = 7) out vec3 viewPos;
 layout(location = 8) out float amStrength;
 layout(location = 9) out float spStrength;
 layout(location = 10) out float diStrength;
+// out shadow
+layout(location = 11) out vec4 outShadowCoord;
+
+const mat4 biasMat = mat4( 
+	0.5, 0.0, 0.0, 0.0,
+	0.0, 0.5, 0.0, 0.0,
+	0.0, 0.0, 1.0, 0.0,
+	0.5, 0.5, 0.0, 1.0 );
 
 void main() {
     // pos of point
@@ -48,8 +60,9 @@ void main() {
     lightPos = ubo.lightPos;
     viewPos = ubo.viewPos;
     modelPos = vec3(ubo.model * vec4(inPosition, 1.0));
-    // modelPos = inPosition;
 	amStrength = ubo.ambientStrength;
     spStrength = ubo.specularStrength;
     diStrength = ubo.diffuseStrength;
+    // point shadow source
+    outShadowCoord =  ( biasMat * ubo.depthModel * ubo.depthView * ubo.depthProj * ubo.model ) * vec4(inPosition, 1.0);
 }

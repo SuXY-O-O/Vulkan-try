@@ -2,6 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 
 layout(binding = 1) uniform sampler2D texSampler;
+layout(binding = 2) uniform sampler2D shadowMap;
 
 // in model
 layout(location = 0) in vec3 fragColor;
@@ -16,9 +17,29 @@ layout(location = 7) in vec3 viewPos;
 layout(location = 8) in float amStrength;
 layout(location = 9) in float spStrength;
 layout(location = 10) in float diStrength;
+layout(location = 11) in vec4 inShadowCoord;
 
 // out color
 layout(location = 0) out vec4 outColor;
+
+// compute shadow
+float textureProj(vec4 P, vec2 off)
+{
+	float shadow = 1.0;
+	vec4 shadowCoord = P / P.w;
+	if ( shadowCoord.z > -1.0 && shadowCoord.z < 1.0 ) 
+	{
+		float dist = texture( shadowMap, shadowCoord.xy + off ).x;
+		if(shadowCoord.w > 0.0){
+		    shadow = 1.0;
+		}
+		if ( shadowCoord.w > 0.0 && dist < shadowCoord.z ) 
+		{
+			shadow = 0.1;
+		}
+	}
+	return shadow;
+}
 
 void main() {
     // Texture color
@@ -51,9 +72,14 @@ void main() {
     }
     vec3 specular = specularStr * fragBaseLight;
 
-    vec3 light = ambient + diffuse + specular;
+    // shadow
+    float shadow = textureProj(inShadowCoord, vec2(0.0));
+
+    vec3 light = ambient + shadow * (diffuse + specular);
     vec3 result = light * textureColor.rgb;
     outColor = vec4(result, 1.0);
     // outColor = vec4(light, 1.0);
-    // outColor = vec4(amStrength, spStrength, diStrength, 1.0);
+    // float tmp = texture( shadowMap, (inShadowCoord / inShadowCoord.w).xy).r / 10.0;
+    // outColor = vec4(shadow, shadow, shadow, 1.0);
+    // outColor = inShadowCoord;
 }

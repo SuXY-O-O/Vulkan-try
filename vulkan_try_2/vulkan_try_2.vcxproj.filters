@@ -35,6 +35,12 @@
     <None Include="shaders\compile.bat">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="shaders\shadow.frag">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\shadow.vert">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linmath.h">
