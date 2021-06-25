@@ -147,15 +147,15 @@ https://vulkan-tutorial.com/Development_environment
 ## 效果展示
 
 - 渲染出的五角星。
-![star](.\doc_image\star.png)
+![star](./doc_image/star.png)
 - 旋转的彩色立方体。
-![box](.\doc_image\box.gif)
+![box](./doc_image/box.gif)
 - 立方体贴图。
-![texture](.\doc_image\texture.gif)
+![texture](./doc_image/texture.gif)
 - 按中心排列
 - 五角星旋转
 - 开启光照，设置材质
 - 绘制球体
 - 透视
-![all](.\doc_image\all.gif)
+![all](./doc_image/all.gif)
 
