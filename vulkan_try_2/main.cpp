@@ -1808,7 +1808,8 @@ private:
         float zNear = 0.1f;
         float zFar = 96.0f;
         glm::vec3 lightPos = { 6.0f, 6.0f, 6.0f };
-        subo.depthProj = glm::perspective(glm::radians(45.0f), shadowPass.width / (float)shadowPass.height, zNear, zFar);
+        subo.depthProj = glm::ortho(-100.0f, 800.0f, -100.0f, 800.0f, zNear, zFar);
+        // subo.depthProj = glm::perspective(glm::radians(45.0f), shadowPass.width / (float)shadowPass.height, zNear, zFar);
         subo.depthProj[1][1] *= -1;
         subo.depthView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0, 0, 1));
         subo.depthModel = glm::mat4(1.0f);

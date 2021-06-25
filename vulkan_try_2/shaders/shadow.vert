@@ -24,6 +24,6 @@ out gl_PerVertex
  
 void main()
 {
-	gl_Position =  ubo.depthModel * ubo.depthView * ubo.depthProj * vec4(inPos, 1.0);
+	gl_Position =  ubo.depthProj * ubo.depthView * ubo.depthModel * vec4(inPos, 1.0);
 
 }

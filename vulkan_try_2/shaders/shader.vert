@@ -64,5 +64,5 @@ void main() {
     spStrength = ubo.specularStrength;
     diStrength = ubo.diffuseStrength;
     // point shadow source
-    outShadowCoord =  ( biasMat * ubo.depthModel * ubo.depthView * ubo.depthProj * ubo.model ) * vec4(inPosition, 1.0);
+    outShadowCoord =  ( biasMat * ubo.depthProj * ubo.depthView * ubo.depthModel * ubo.model ) * vec4(inPosition, 1.0);
 }
